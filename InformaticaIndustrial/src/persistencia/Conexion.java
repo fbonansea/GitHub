@@ -12,6 +12,8 @@ public class Conexion {
 		public Conexion(){
 			try
 	        {
+	        	
+	        	
 				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 	            cn=DriverManager.getConnection("jdbc:odbc:Conecta_db"); 
 
