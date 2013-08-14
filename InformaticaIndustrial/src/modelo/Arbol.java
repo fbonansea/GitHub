@@ -18,6 +18,8 @@ public class Arbol {
 	int i,j=0;
 	String k="0";
 	String m="3";
+	
+	
 	boolean kj=false;
 	ArrayList<Nodo> padresPrincipales = new ArrayList<>();
 	
