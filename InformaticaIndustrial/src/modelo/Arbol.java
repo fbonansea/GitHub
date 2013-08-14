@@ -1,44 +1,44 @@
 package modelo;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import javax.swing.JTree;
 
 import persistencia.Conexion;
 
 public class Arbol {
 
-	//Conexion c=new Conexion();
-	//Connection cn= c.getConexion();
-	Connection cn;
+	Conexion c=new Conexion();
+	Connection cn= c.getConexion();
+	//Connection cn;
 	Integer[][] bom = new Integer[10][10];
 	int i,j=0;
-	String k="0";
-	String m="3";
-	
-	
-	boolean kj=false;
 	ArrayList<Nodo> padresPrincipales = new ArrayList<>();
 	
 	public Arbol(){
 	
-		try
-        {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            cn=DriverManager.getConnection("jdbc:odbc:Conecta_db"); 
-
-        }
-		catch (Exception e){
-			e.printStackTrace();
-			System.out.println("Problemas con la conexion");
-		}
+//		try
+//        {
+//			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+//            cn=DriverManager.getConnection("jdbc:odbc:Conecta_db"); 
+//
+//        }
+//		catch (Exception e){
+//			e.printStackTrace();
+//			System.out.println("Problemas con la conexion");
+//		}
 
 //OBTENER PADRES PRINCIPALES
 		try {
+			StringBuilder sb=new StringBuilder();
+//			sb.append("Select distinct padre ");
+//			sb.append("from TEST");
+//			sb.append("where padre not in (select hijo from TEST)");
 			ResultSet padresP = cn.prepareStatement("Select distinct padre from TEST where padre not in (select hijo from TEST)").executeQuery();
+//			ResultSet padresP=cn.prepareStatement(sb.toString()).executeQuery();
 			 while (padresP.next()) {
 		        	padresPrincipales.add(new Nodo (padresP.getInt("padre")));
 		        }
@@ -68,7 +68,9 @@ public class Arbol {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 				}
-	
+			StringBuilder sb=new StringBuilder();
+		MostrarArbol(sb,padresPrincipales.get(0));	
+			
 	}
 	
 	//bom: lo que levanto de la tabla BOM transformado en un array
@@ -83,9 +85,9 @@ public class Arbol {
 				//	 cuando no tiene mas hijo, aumenta el k y pregunta de ahi para abajo (bom[k][0])= nodo.getPadre
 				//	 
 					try{	
-						System.out.println("         ");
+						//System.out.println("         ");
 						for (int k=0; k<bom.length;k++)
-						{	System.out.println("BOM["+ ((Integer)k).toString() +"]="+bom[k][0] +"  Nodo="+nodo.GetValor().toString() );
+						{	//System.out.println("BOM["+ ((Integer)k).toString() +"]="+bom[k][0] +"  Nodo="+nodo.GetValor().toString() );
 						while (bom[k][0]!= null &&(bom[k][0].equals(nodo.GetValor())) && k<7)
 					        { 
 							  //Integer hijo = nodo.GetProxHijo();
@@ -93,7 +95,9 @@ public class Arbol {
 							 Nodo h = new Nodo(bom[k][1]);
 							 nodo.AgregarHijo(h);
 							 h.setPadre(nodo);
-							  System.out.println("Hijo: "+bom[k][1].toString()); 
+							
+							  System.out.println("Hijo: "+bom[k][1].toString());
+							 // System.out.println("Posicion: "+nodo.GetPosicion(h));
 							 // Nodo hijoN = new Nodo(bom[k][1]);
 							  //nodo.SetProxPadre(hijoN);
 							  ArmaArbol(bom,h);
@@ -109,29 +113,52 @@ public class Arbol {
 					}
 	}
 	
-	private ArrayList<Nodo> Explosiona (Nodo padre)
-	{
-		for (Nodo nodoLista: padresPrincipales)
-		{
-			if(padre.GetValor().equals(nodoLista.GetValor()))
-			{
-				MostrarArbol(padre);
-			}
-		}
-		return null;
-	}
+//	private ArrayList<Nodo> Explosiona (Nodo padre)
+//	{
+//		for (Nodo nodoLista: padresPrincipales)
+//		{
+//			if(padre.GetValor().equals(nodoLista.GetValor()))
+//			{
+//				MostrarArbol(padre);
+//			}
+//		}
+//		return null;
+//	}
 	
-	private void MostrarArbol (Nodo padre)
+	private void MostrarArbol(){
+		JTree j=new JTree();
+	}
+	private StringBuilder MostrarArbol (StringBuilder sb, Nodo padre)
 	{
-		while (padre.GetHijos()!= null)
-		  {
-			ArrayList<Nodo> hijos = padre.GetHijos(); 
-			for (Nodo i: hijos)
-			    {System.out.println("hijo: "+i.GetValor());
-		         MostrarArbol(i);
-			    }
-		  }
+			
+//			Jtree j = new Jtree(padresPrincipales);
+			
 		
+			System.out.println(sb.toString());
+			System.out.println("||||||||||||||||||||||");
+			sb.append(padre.GetValor());
+			if(padre.GetHijos()!=null){
+				
+				sb.append("\n \t |");
+				
+					for (Nodo nodoH:padre.GetHijos()){
+						System.out.println("hijo->"+nodoH.GetValor());
+//						sb.append("\t");
+//						System.out.println(sb.toString());
+//						System.out.println("---------------");
+						
+						MostrarArbol(sb, nodoH);
+						sb.append("\n \t |");
+//						sb.append("\n \t |");
+//						sb.append("\t");
+//						sb.append(nodoH.GetValor());
+//						System.out.println(sb.toString());
+					}
+			}
+				
+				
+//				Jtree j = new Jtree(padresPrincipales);
+				return sb;
 	}
 
 

@@ -11,6 +11,9 @@ public class Nodo {
 		private Integer cont=0;
 		private Nodo proxPadre;
 		private Integer cuentaHijo=0;
+		
+		private String descripcion;
+		
 //		public Nodo(Integer p, Integer[] h)
 //		{
 //			valor=p;
@@ -19,7 +22,7 @@ public class Nodo {
 		public Nodo(Integer p)
 		{
 			valor=p;
-			hijo = new ArrayList<>();
+			
 		}
 
 		public Integer GetValor ()
@@ -54,8 +57,16 @@ public class Nodo {
 		
 		public void AgregarHijo(Nodo h)
 		{
+			if(hijo== null)
+				hijo = new ArrayList<>();
+		   
 			hijo.add(h);
 
 		}
-
+		public String getDescripcion() {
+			return descripcion;
+		}
+		public void setDescripcion(String descripcion) {
+			this.descripcion = descripcion;
+		}
 }
